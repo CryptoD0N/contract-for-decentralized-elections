@@ -1,0 +1,32 @@
+# Starknet advanced smart contract example
+
+# Define a decentralized voting contract
+contract VotingContract:
+    var candidates : map(felt, felt)
+    var voters : map(felt, bool)
+
+    # Initialize the contract with a list of candidates
+    public func init(candidateIds: felt[3]):
+        for i in felt(0) .. felt(3):
+            candidates[i] = 0
+
+    # Vote for a candidate
+    public func vote(candidateId: felt):
+        # Check if the voter has not voted before
+        require(!voters[msg.sender], "You have already voted.")
+        
+        # Check if the candidateId is valid
+        require(candidateId < 3, "Invalid candidate ID.")
+
+        # Increment the vote count for the selected candidate
+        candidates[candidateId] += 1
+
+        # Mark the voter as voted
+        voters[msg.sender] = true
+
+    # Get the vote count for a candidate
+    public view func getVotes(candidateId: felt) -> felt:
+        # Check if the candidateId is valid
+        require(candidateId < 3, "Invalid candidate ID.")
+
+        return candidates[candidateId]
